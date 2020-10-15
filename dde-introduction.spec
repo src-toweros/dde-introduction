@@ -2,10 +2,11 @@
 %global debug_package   %{nil}
 Name:           dde-introduction
 Version:        5.5.6.1
-Release:        2
+Release:        3
 Summary:        Qt platform theme integration plugins
 License:        GPLv3+
 Source0:        %{name}-%{version}.orig.tar.xz
+Patch0:         Fix-compilation-errors.patch	
 
 BuildRequires:  qt5-qtbase-devel
 BuildRequires:  qt5-linguist
@@ -16,7 +17,6 @@ BuildRequires:  dde-qt-dbus-factory-devel
 BuildRequires:  gsettings-qt-devel
 BuildRequires:  qt5-qtmultimedia-devel
 BuildRequires:  qt5-qtx11extras-devel
-BuildRequires:  libdmr-devel
 
 %description
 Qt platform theme integration plugins for DDE
@@ -45,6 +45,9 @@ popd
 
 
 %changelog
+* Thu Oct 15 2020 weidong <weidong@openeuler.org> - 5.5.6.1-3
+- Fix compilation errors
+
 * Thu Oct 15 2020 weidong <weidong@openeuler.org> - 5.5.6.1-2
 - add buildrequires
 
