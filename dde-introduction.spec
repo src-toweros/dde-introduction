@@ -2,11 +2,12 @@
 %global debug_package   %{nil}
 Name:           dde-introduction
 Version:        5.5.6.1
-Release:        3
+Release:        4
 Summary:        Qt platform theme integration plugins
 License:        GPLv3+
 Source0:        %{name}-%{version}.orig.tar.xz
 Patch0:         Fix-compilation-errors.patch	
+Patch1:         Fix-compilation-errors-02.patch	
 
 BuildRequires:  qt5-qtbase-devel
 BuildRequires:  qt5-linguist
@@ -45,6 +46,9 @@ popd
 
 
 %changelog
+* Thu Oct 15 2020 weidong <weidong@openeuler.org> - 5.5.6.1-4
+- Fix compilation errors
+
 * Thu Oct 15 2020 weidong <weidong@openeuler.org> - 5.5.6.1-3
 - Fix compilation errors
 
