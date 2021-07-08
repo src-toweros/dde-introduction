@@ -1,51 +1,62 @@
-%bcond_with check
-%global debug_package   %{nil}
 Name:           dde-introduction
-Version:        5.5.6.1
-Release:        4
-Summary:        Qt platform theme integration plugins
+Version:        5.6.0.7
+Release:        1
+Summary:        Introduction for UOS
 License:        GPLv3+
-Source0:        %{name}-%{version}.orig.tar.xz
-Patch0:         Fix-compilation-errors.patch	
-Patch1:         Fix-compilation-errors-02.patch	
+URL:            https://github.com/linuxdeepin/%{name}
+Source0:        %{url}/archive/%{version}/%{name}-%{version}.tar.gz
 
-BuildRequires:  qt5-qtbase-devel
-BuildRequires:  qt5-linguist
-BuildRequires:  cmake
-BuildRequires:  dtkwidget-devel
-BuildRequires:  dtkcore-devel
-BuildRequires:  dde-qt-dbus-factory-devel
-BuildRequires:  gsettings-qt-devel
-BuildRequires:  qt5-qtmultimedia-devel
-BuildRequires:  qt5-qtx11extras-devel
+BuildRequires: gcc-c++
+BuildRequires: qt5-devel
+
+BuildRequires: dtkcore-devel dtkwidget-devel
+BuildRequires: pkgconfig(dframeworkdbus)
+#BuildRequires: pkgconfig(libdmr)
+BuildRequires: pkgconfig(gsettings-qt)
+
+#BuildRequires: ffmpegthumbnailer-devel
+
+BuildRequires: deepin-desktop-server
+Requires:      deepin-desktop-server
 
 %description
-Qt platform theme integration plugins for DDE
- Multiple Qt plugins to provide better Qt5 integration for DDE is included.
+When you log into the system for the first time, a welcome program will automatically start.
+Watch the introduction video to get new features, customize your desktop, enable the window
+effect and know more about UnionTech OS.
 
 %prep
 %autosetup
 
+# disable dmr lib
+sed -i 's/contains(TARGET_ARCH, x86_64)/contains(TARGET_ARCH, mips)/' introduction.pro
 
 %build
-export PATH=$PATH:/usr/lib64/qt5/bin
-mkdir build && cd build
-%{_libdir}/qt5/bin/qmake ..
-%{__make}
+# help find (and prefer) qt5 utilities, e.g. qmake, lrelease
+export PATH=%{_qt5_bindir}:$PATH
+mkdir build && pushd build
+%qmake_qt5 ../ VERSION=%{version}  DEFINES+="VERSION=%{version}"
+%make_build
+popd
 
 %install
-pushd %{_builddir}/%{name}-%{version}/build
-%make_install INSTALL_ROOT=%{buildroot}
+%make_install -C build INSTALL_ROOT="%buildroot"
+# bugfix#50424
+pushd %{buildroot}%{_datadir}/dde-introduction
+ln -svf server.mp4 demo.mp4
 popd
 
 %files
-%{_bindir}/dde-introduction
-%{_datadir}/applications/*
-%{_datadir}/dde-introduction/*
-%{_datadir}/icons/*
-
+%doc CHANGELOG.md
+%{_bindir}/%{name}
+%{_datadir}/icons/hicolor/scalable/apps/%{name}.svg
+%{_datadir}/%{name}/translations/*.qm
+%{_datadir}/applications/%{name}.desktop
+%{_datadir}/%{name}/
 
 %changelog
+* Fri Oct 23 2020 panchenbo <panchenbo@uniontech.com> - 5.6.0.7-1
+- update to 5.6.0.7
+
 * Thu Oct 15 2020 weidong <weidong@openeuler.org> - 5.5.6.1-4
 - Fix compilation errors
 
